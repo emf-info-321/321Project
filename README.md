@@ -54,115 +54,45 @@ flowchart TD
 
 ```
 
-
-1️⃣ API Gateway
-
-Traefik ou Caddy
-➡️ Point d'entrée unique pour toutes les requêtes
-➡️ Route vers Keycloak et TimeEntry
-
-2️⃣ Keycloak (Auth Service)
-
-➡️ Gestion des utilisateurs
-➡️ OpenID Connect / OAuth2
-➡️ Fournit les JWT pour sécuriser les API
-
-3️⃣ Time Entry Service
-
-NestJS / Node.js + PostgreSQL
-➡️ CRUD d’entrées de temps
-➡️ Publie des événements AMQP vers RabbitMQ
-
-4️⃣ RabbitMQ (Message Broker)
-
-➡️ Transporte les messages internes
-➡️ Sert de lien entre TimeEntry et Reporting
-
-5️⃣ Reporting Service
-
-Node.js ou Python
-➡️ Consomme les événements AMQP
-➡️ Génère des statistiques → exposées via API
-
-
-
-🧩 Services de l’architecture
-1. API Gateway
-
-Le point d’entrée unique du système.
-Il reçoit toutes les requêtes du Frontend et les redirige vers les services appropriés.
-Il permet également de simplifier les URLs, d’unifier les accès et d’ajouter une couche de sécurité.
-
+## 1. API Gateway
+Le point d’entrée unique du système. Il reçoit toutes les requêtes du Frontend et les redirige vers les services appropriés. Il simplifie les URLs, applique une couche de sécurité et peut gérer HTTPS.
 Technologie recommandée : Traefik ou Caddy
 Responsabilités :
+- Router les requêtes vers Keycloak et le Time Entry Service
+- Centraliser l’accès
+- Gérer les règles HTTP
 
-Router les requêtes vers Keycloak et le Time Entry Service
-
-Servir de proxy central
-
-Gérer éventuellement HTTPS et les règles d’accès
-
-2. Keycloak (Auth Service)
-
-Le service d’authentification et d’autorisation du système.
-Il gère les utilisateurs, les sessions, les rôles et délivre les tokens JWT utilisés pour sécuriser les communications entre le frontend et les services REST.
-
+## 2. Keycloak (Auth Service)
+Service d’authentification et d’autorisation du système. Il gère les utilisateurs, les rôles et délivre les tokens JWT utilisés pour sécuriser les services.
 Technologie : Keycloak
 Responsabilités :
+- Authentification via OpenID Connect
+- Délivrance de tokens JWT
+- Gestion des rôles RBAC
+- Endpoints de login/logout
 
-Authentification des utilisateurs (OpenID Connect)
-
-Délivrance des tokens JWT
-
-Gestion des rôles et permissions (RBAC)
-
-Endpoints de login / logout
-
-3. Time Entry Service
-
-Le service métier principal du système.
-Il expose une API REST permettant de créer, lire, modifier et supprimer des entrées de temps.
-Il publie également des événements AMQP à destination du Reporting Service.
-
+## 3. Time Entry Service
+Service métier principal du système. Il expose une API REST permettant de créer, lire, modifier et supprimer des entrées de temps.
 Technologies recommandées : Node.js (NestJS) + PostgreSQL
 Responsabilités :
+- CRUD des entrées de temps
+- Vérification des tokens JWT
+- Stockage dans PostgreSQL
+- Publication d’événements AMQP vers RabbitMQ
 
-CRUD des entrées de temps
-
-Vérification des tokens JWT reçus via l’API Gateway
-
-Stockage des données dans PostgreSQL
-
-Publication d’événements AMQP (time.entry.created / updated) vers RabbitMQ
-
-4. RabbitMQ (Message Broker)
-
-Le système de messagerie asynchrone du projet.
-Il permet aux services de communiquer entre eux via le pattern Publish/Subscribe tout en restant découplés.
-
+## 4. RabbitMQ (Message Broker)
+Système de messagerie interne basé sur AMQP. Il permet aux services de communiquer de manière asynchrone, sans dépendance directe.
 Technologie : RabbitMQ
 Responsabilités :
+- Transport d’événements internes
+- Découplage entre services
+- Gestion des files, retries et dead-letter queues
 
-Transport des messages internes
-
-Réception des événements publiés par le Time Entry Service
-
-Diffusion des messages au Reporting Service
-
-Gestion des files et des retries en cas d’erreurs
-
-5. Reporting Service
-
-Le service responsable du traitement et de l’analyse des données reçues depuis RabbitMQ.
-Il consomme les événements publiés par le Time Entry Service et génère un modèle de lecture optimisé (read model).
-
-Technologies recommandées : Node.js ou Python
+## 5. Reporting Service
+Service dédié à l’analyse et au traitement des événements provenant de RabbitMQ.
+Technologies : Node.js ou Python
 Responsabilités :
-
-Consommer les messages AMQP provenant de RabbitMQ
-
-Calculer des statistiques (par utilisateur, par projet, par date, etc.)
-
-Stocker un modèle de lecture séparé (ex. PostgreSQL ou Redis)
-
-Exposer une API REST dédiée au reporting
+- Consommer les messages AMQP
+- Calculer des statistiques
+- Maintenir un read-model optimisé
+- Fournir une API REST pour les rapports
