@@ -42,6 +42,50 @@ Responsabilités :
 
 ---
 
+```mermaid
+erDiagram
+    ETUDIANT {
+        int id_etudiant PK
+        string nom
+        string prenom
+        date date_naissance
+        string email
+    }
+
+    PROFESSEUR {
+        int id_prof PK
+        string nom
+        string prenom
+        string email
+    }
+
+    SALLE {
+        int id_salle PK
+        string nom_salle
+        int capacite
+    }
+
+    COURS {
+        int id_cours PK
+        string nom_cours
+        int credits
+        int id_prof FK
+        int id_salle FK
+    }
+
+    INSCRIPTION {
+        int id_etudiant FK
+        int id_cours FK
+        date date_inscription
+        float note_finale
+    }
+
+    PROFESSEUR ||--o{ COURS : "donne"
+    SALLE ||--o{ COURS : "accueille"
+    ETUDIANT ||--o{ INSCRIPTION : "s'inscrit"
+    COURS ||--o{ INSCRIPTION : "contient"
+```
+
 ### 2. API Gateway
 Point d’entrée unique du système.
 Il redirige le trafic vers les services internes et protège l’architecture.
