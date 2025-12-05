@@ -87,3 +87,19 @@ flowchart TD
 
     %% MQ to Reporting
     MQ --> RP[Reporting Service<br/>(Stats / Read Model / API)]
+
+
+graph TD
+
+    FE[Frontend (Web App)]
+    GW[API Gateway (Traefik / Caddy)]
+    KC[Keycloak (Auth / Users / JWT)]
+    TE[Time Entry Service (REST + PostgreSQL)]
+    MQ[(RabbitMQ)]
+    RP[Reporting Service (Stats / Read Model)]
+
+    FE --> GW
+    GW --> KC
+    GW --> TE
+    TE --> MQ
+    MQ --> RP
