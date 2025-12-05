@@ -49,27 +49,25 @@ Schéma simplifié :
                                |
                 +--------------+--------------+
                 |                             |
-                |                             |
                 v                             v
 
-        +----------------+             +---------------------------+
-        |    Keycloak    |             |   Time Entry Service      |
-        | (Auth Service) |             |  (REST + PostgreSQL)      |
-        +--------+-------+             +------------+--------------+
-                 |                                   |
-                 |                                   |
-                 |                      Publie les événements
-                 |                                   |
-                 v                                   v
-
-                             +-------------------+
-                             |     RabbitMQ      |
-                             | (Message Broker)  |
-                             +---------+---------+
-                                       |
-                                       |
-                                       v
-                         +-----------------------------+
-                         |     Reporting Service       |
-                         |   (Stats + Read Model)      |
-                         +-----------------------------+
+        +---------------------------+   +---------------------------+
+        |         Keycloak          |   |    Time Entry Service     |
+        |   (Auth / Users / JWT)    |   |   (REST API + PostgreSQL) |
+        +---------------------------+   +-------------+-------------+
+                                                      |
+                                                      |  Publie des événements :
+                                                      |    - time.entry.created
+                                                      |    - time.entry.updated
+                                                      v
+                                              +-------+-------+
+                                              |   RabbitMQ    |
+                                              | (Message Bus) |
+                                              +-------+-------+
+                                                      |
+                                                      |  Diffuse les messages
+                                                      v
+                                         +-----------------------------+
+                                         |     Reporting Service       |
+                                         | (Stats / Read Model / API) |
+                                         +-----------------------------+
