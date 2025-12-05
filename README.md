@@ -35,6 +35,7 @@ Base de données — stockage persistant (PostgreSQL)
 
 Schéma simplifié :
 
+
                      +-------------------+
                      |     Frontend      |
                      |   (React/Vue/etc) |
@@ -44,32 +45,31 @@ Schéma simplifié :
                        +-------+--------+
                        |   API Gateway  |
                        | (Traefik/Caddy)|
-                       +---+--------+---+
-                           |        |
-                           |        |
-         Auth              |        |    API
-+----------------+         |        |
-|   Keycloak     |<--------+        v
-| (Auth Service) |              +---+------------------+
-+----------------+              |  Time Entry Service  |
-                                | (REST + PostgreSQL)  |
-                                +---+------------------+
-                                    |
-                                    |  Publish events
-                                    v
-                           +-------------------+
-                           |     RabbitMQ      |
-                           | (Message Broker)  |
-                           +---------+---------+
-                                     |
-                                     |  Subscribe events
-                                     v
-                     +-------------------------+
-                     |    Reporting Service    |
-                     | (Stats + Read Model)    |
-                     +-------------------------+
+                       +-------+--------+
+                               |
+                +--------------+--------------+
+                |                             |
+                |                             |
+                v                             v
 
-Description des composants
-1. API Gateway (Traefik ou Caddy)
+        +----------------+             +---------------------------+
+        |    Keycloak    |             |   Time Entry Service      |
+        | (Auth Service) |             |  (REST + PostgreSQL)      |
+        +--------+-------+             +------------+--------------+
+                 |                                   |
+                 |                                   |
+                 |                      Publie les événements
+                 |                                   |
+                 v                                   v
 
-Point d’entrée unique pour le système.
+                             +-------------------+
+                             |     RabbitMQ      |
+                             | (Message Broker)  |
+                             +---------+---------+
+                                       |
+                                       |
+                                       v
+                         +-----------------------------+
+                         |     Reporting Service       |
+                         |   (Stats + Read Model)      |
+                         +-----------------------------+
