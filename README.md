@@ -39,15 +39,16 @@ Schéma simplifié :
 
 flowchart TD
 
-    FE[Frontend]
-    GW[API Gateway]
-    KC[Keycloak]
-    TE[Time Entry Service]
-    MQ[(RabbitMQ)]
-    RP[Reporting Service]
+    FE[Frontend<br/>(Vue.js)]
+    GW[API Gateway<br/>(Traefik ou Caddy)]
+    KC[Keycloak<br/>(Auth / OpenID / JWT)]
+    TE[Time Entry Service<br/>(NestJS / Node.js<br/>+ PostgreSQL)]
+    MQ[(RabbitMQ<br/>(Message Broker))]
+    RP[Reporting Service<br/>(Node.js / Python)]
 
-    FE --> GW
-    GW --> KC
-    GW --> TE
-    TE --> MQ
-    MQ --> RP
+    %% Edges with protocols
+    FE -- "HTTP / HTTPS" --> GW
+    GW -- "HTTP / OpenID Connect" --> KC
+    GW -- "HTTP / REST + JWT" --> TE
+    TE -- "AMQP Publish" --> MQ
+    MQ -- "AMQP Consume" --> RP
