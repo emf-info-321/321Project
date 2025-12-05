@@ -73,38 +73,7 @@ Schéma simplifié :
                                          +-----------------------------+
 
 
-flowchart TD
-
-    %% Frontend
-    FE[Frontend<br/>(Web App)] --> GW[API Gateway<br/>(Traefik / Caddy)]
-
-    %% Gateway routes
-    GW --> KC[Keycloak<br/>(Auth / Users / JWT)]
-    GW --> TE[Time Entry Service<br/>(REST API + PostgreSQL)]
-
-    %% Time Entry to MQ
-    TE -->|Publie événements<br/>time.entry.created / updated| MQ[(RabbitMQ<br/>(Message Broker))]
-
-    %% MQ to Reporting
-    MQ --> RP[Reporting Service<br/>(Stats / Read Model / API)]
-
-
-graph TD
-
-    FE[Frontend (Web App)]
-    GW[API Gateway (Traefik / Caddy)]
-    KC[Keycloak (Auth / Users / JWT)]
-    TE[Time Entry Service (REST + PostgreSQL)]
-    MQ[(RabbitMQ)]
-    RP[Reporting Service (Stats / Read Model)]
-
-    FE --> GW
-    GW --> KC
-    GW --> TE
-    TE --> MQ
-    MQ --> RP
-
-flowchart TD
+```mermaid
 
     FE[Frontend]
     GW[API Gateway]
