@@ -12,11 +12,11 @@ Chaque composant du système fonctionne comme un service indépendant, communiqu
 flowchart TD
 
     FE[Frontend web - vuejs]
-    GW[API Gateway Traefik]
-    KC[Auth Service keycloak JWT]
-    TE[Time Entry Service nodejs]
-    MQ[(Event Broker RabbitMQ)]
-    RP[Reporting Service]
+    GW[API Gateway - Traefik]
+    KC[Auth Service - keycloak JWT]
+    TE[Time Entry Service - nodejs]
+    MQ[(Event Broker - RabbitMQ)]
+    RP[Reporting Service - nodejs]
 
     FE -- "HTTP / HTTPS" --> GW
     GW -- "HTTP OpenID Connect" --> KC
