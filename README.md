@@ -35,44 +35,6 @@ Base de données — stockage persistant (PostgreSQL)
 
 Schéma simplifié :
 
-
-                     +-------------------+
-                     |     Frontend      |
-                     |   (React/Vue/etc) |
-                     +---------+---------+
-                               |
-                               v
-                       +-------+--------+
-                       |   API Gateway  |
-                       | (Traefik/Caddy)|
-                       +-------+--------+
-                               |
-                +--------------+--------------+
-                |                             |
-                v                             v
-
-        +---------------------------+   +---------------------------+
-        |         Keycloak          |   |    Time Entry Service     |
-        |   (Auth / Users / JWT)    |   |   (REST API + PostgreSQL) |
-        +---------------------------+   +-------------+-------------+
-                                                      |
-                                                      |  Publie des événements :
-                                                      |    - time.entry.created
-                                                      |    - time.entry.updated
-                                                      v
-                                              +-------+-------+
-                                              |   RabbitMQ    |
-                                              | (Message Bus) |
-                                              +-------+-------+
-                                                      |
-                                                      |  Diffuse les messages
-                                                      v
-                                         +-----------------------------+
-                                         |     Reporting Service       |
-                                         | (Stats / Read Model / API) |
-                                         +-----------------------------+
-
-
 ```mermaid
 
 flowchart TD
