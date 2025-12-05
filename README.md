@@ -51,8 +51,9 @@ flowchart TD
     GW -- "HTTP REST JWT" --> TE
     TE -- "AMQP Publish" --> MQ
     MQ -- "AMQP Consume" --> RP
-    
-```mermaid
+
+```
+
 
 1️⃣ API Gateway
 
