@@ -115,6 +115,7 @@ Responsabilités :
 
 #### Détails :
 container rabbitmq sur port 5672 ou 15672
+
 ---
 
 ### 6. Reporting / Analytics Service
