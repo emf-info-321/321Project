@@ -11,11 +11,11 @@ Chaque composant du système fonctionne comme un service indépendant, communiqu
 
 flowchart TD
 
-    FE[Frontend VueJS]
-    GW[API Gateway Traefik]
-    KC[Keycloak Auth JWT]
-    TE[Time Entry Service NestJS]
-    MQ[(RabbitMQ Event Broker)]
+    FE[Frontend web (vuejs)]
+    GW[API Gateway (Traefik)]
+    KC[Auth Service (keycloak -> JWT)]
+    TE[Time Entry Service (nodejs)]
+    MQ[(Event Broker (RabbitMQ))]
     RP[Reporting Service]
 
     FE -- "HTTP / HTTPS" --> GW
