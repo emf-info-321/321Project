@@ -75,6 +75,8 @@ Schéma simplifié :
 
 ```mermaid
 
+flowchart TD
+
     FE[Frontend]
     GW[API Gateway]
     KC[Keycloak]
