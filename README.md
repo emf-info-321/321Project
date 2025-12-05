@@ -71,3 +71,19 @@ Schéma simplifié :
                                          |     Reporting Service       |
                                          | (Stats / Read Model / API) |
                                          +-----------------------------+
+
+
+flowchart TD
+
+    %% Frontend
+    FE[Frontend<br/>(Web App)] --> GW[API Gateway<br/>(Traefik / Caddy)]
+
+    %% Gateway routes
+    GW --> KC[Keycloak<br/>(Auth / Users / JWT)]
+    GW --> TE[Time Entry Service<br/>(REST API + PostgreSQL)]
+
+    %% Time Entry to MQ
+    TE -->|Publie événements<br/>time.entry.created / updated| MQ[(RabbitMQ<br/>(Message Broker))]
+
+    %% MQ to Reporting
+    MQ --> RP[Reporting Service<br/>(Stats / Read Model / API)]
