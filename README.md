@@ -13,9 +13,9 @@ flowchart TD
 
     FE[Frontend web - vuejs]
     GW[API Gateway Traefik]
-    KC[Auth Service (keycloak -> JWT)]
-    TE[Time Entry Service (nodejs)]
-    MQ[(Event Broker (RabbitMQ))]
+    KC[Auth Service keycloak JWT]
+    TE[Time Entry Service nodejs]
+    MQ[(Event Broker RabbitMQ)]
     RP[Reporting Service]
 
     FE -- "HTTP / HTTPS" --> GW
