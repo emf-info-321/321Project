@@ -103,3 +103,18 @@ graph TD
     GW --> TE
     TE --> MQ
     MQ --> RP
+
+flowchart TD
+
+    FE[Frontend]
+    GW[API Gateway]
+    KC[Keycloak]
+    TE[Time Entry Service]
+    MQ[(RabbitMQ)]
+    RP[Reporting Service]
+
+    FE --> GW
+    GW --> KC
+    GW --> TE
+    TE --> MQ
+    MQ --> RP
