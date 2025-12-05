@@ -11,8 +11,8 @@ Chaque composant du système fonctionne comme un service indépendant, communiqu
 
 flowchart TD
 
-    FE[Frontend web (vuejs)]
-    GW[API Gateway (Traefik)]
+    FE[Frontend web - vuejs]
+    GW[API Gateway Traefik]
     KC[Auth Service (keycloak -> JWT)]
     TE[Time Entry Service (nodejs)]
     MQ[(Event Broker (RabbitMQ))]
