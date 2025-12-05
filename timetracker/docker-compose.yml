@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    image: traefik:v3.0
+    container_name: api-gateway
+    command:
+      - "--providers.file.filename=/etc/traefik/dynamic.yml"
+      - "--entrypoints.web.address=:80"
+      - "--api.dashboard=true"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - timetracker
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: keycloak
+    command: ["start-dev"]
+    environment:
+      KC_DB: dev-mem
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    networks:
+      - timetracker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.keycloak.entrypoints=web"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - timetracker
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: timetracker
+      POSTGRES_PASSWORD: timetracker
+      POSTGRES_DB: timetracker
+    ports:
+      - "5432:5432"
+    networks:
+      - timetracker
+
+  time-entry-service:
+    build: ./time-entry-service
+    container_name: time-entry-service
+    environment:
+      DATABASE_URL: postgres://timetracker:timetracker@postgres:5432/timetracker
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - timetracker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.timeentry.rule=PathPrefix(`/api/time`)"
+      - "traefik.http.routers.timeentry.entrypoints=web"
+      - "traefik.http.services.timeentry.loadbalancer.server.port=3000"
+
+  reporting-service:
+    build: ./reporting-service
+    container_name: reporting-service
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    networks:
+      - timetracker
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.reporting.rule=PathPrefix(`/api/reporting`)"
+      - "traefik.http.routers.reporting.entrypoints=web"
+      - "traefik.http.services.reporting.loadbalancer.server.port=4000"
+
+networks:
+  timetracker:
+    driver: bridge

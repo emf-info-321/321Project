@@ -54,11 +54,13 @@ Responsabilités :
 Service centralisé d’authentification et d’autorisation.
 Il gère les utilisateurs et délivre les tokens JWT utilisés pour sécuriser les services backend.
 
-Technologie : Keycloak
+Technologie : Keycloak <br>
 Responsabilités :
 - Authentifier les utilisateurs via OpenID Connect
 - Gérer les rôles et permissions
 - Émettre et valider les tokens JWT
+
+
 
 ---
 

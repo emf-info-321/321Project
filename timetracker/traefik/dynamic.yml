@@ -1,0 +1,23 @@
+http:
+  middlewares:
+    strip-time:
+      stripPrefix:
+        prefixes:
+          - /api/time
+    strip-reporting:
+      stripPrefix:
+        prefixes:
+          - /api/reporting
+
+  routers:
+    # Les routes sont surtout définies via les labels Docker.
+    # Ce fichier peut rester minimal pour commencer.
+    dummy:
+      rule: "PathPrefix(`/does-not-exist`)"
+      service: noop
+
+  services:
+    noop:
+      loadBalancer:
+        servers:
+          - url: "http://127.0.0.1:1"
