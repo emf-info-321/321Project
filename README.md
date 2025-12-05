@@ -114,7 +114,8 @@ Responsabilités :
 - Découplage entre Time Entry Service et Reporting Service
 
 #### Détails :
-container rabbitmq sur port 5672 ou 15672
+container rabbitmq sur port 5672
+
 
 ---
 
