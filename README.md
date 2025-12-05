@@ -30,11 +30,15 @@ flowchart TD
 Interface utilisateur accessible depuis le navigateur.
 Il communique uniquement avec l’API Gateway et utilise Keycloak pour l’authentification.
 
-Technologies possibles : Vue.js, React, Svelte
+Technologies possibles : Vue.js, React, Svelte <br>
 Responsabilités :
 - Afficher les écrans de saisie et de reporting
 - Gérer le login via Keycloak
 - Envoyer des requêtes REST signées (JWT)
+
+#### Détails :
+ to complete ...
+
 
 ---
 
@@ -42,11 +46,15 @@ Responsabilités :
 Point d’entrée unique du système.
 Il redirige le trafic vers les services internes et protège l’architecture.
 
-Technologies possibles : Traefik, Caddy, Nginx
+Technologies possibles : Traefik, Caddy, Nginx <br>
 Responsabilités :
 - Router les requêtes vers Keycloak, Time Entry Service et Reporting
 - Exposer les endpoints unifiés (ex. /api/…)
 - Jouer le rôle de reverse proxy
+
+#### Détails :
+Lancement du docker compose up <br>
+Tout se trouve dans le dossier traefik
 
 ---
 
@@ -59,8 +67,21 @@ Responsabilités :
 - Authentifier les utilisateurs via OpenID Connect
 - Gérer les rôles et permissions
 - Émettre et valider les tokens JWT
+<br>
 
-
+#### Détails :
+Accès sur : http://localhost:8081 (après le docker compose up) <br>
+- Login : admin / admin
+- Créer un realm timetracker : Menu en haut à gauche → “Create realm” - nom timetracker - save
+- Créer un client pour le frontend - Aller dans le realm timetracker - 
+    - Menu “Clients” → “Create client”
+    - Client ID : timetracker-frontend
+    - Type : OpenID Connect
+    - “Root URL” (si demandé) : http://localhost:5173 (Vite)
+- Ensuite, dans la config du client :
+    - “Access type” : public
+    - “Valid redirect URIs” : http://localhost:5173/*
+    - “Web origins” : http://localhost:5173 ou * pour tester
 
 ---
 
@@ -68,12 +89,17 @@ Responsabilités :
 Service métier principal chargé de la gestion des entrées de temps.
 Il publie également des événements à destination du Reporting Service.
 
-Technologies recommandées : Node.js (NestJS) + PostgreSQL
+Technologies recommandées : Node.js (NestJS) + PostgreSQL <br>
 Responsabilités :
 - CRUD des entrées de temps
 - Validation des tokens JWT
 - Stockage des données dans PostgreSQL
 - Publication d’événements AMQP vers RabbitMQ
+
+<br>
+
+#### Détails :
+Tout dans le dossier time-entry-service
 
 ---
 
@@ -81,20 +107,25 @@ Responsabilités :
 Système de messagerie asynchrone assurant la communication entre les services.
 Il implémente le modèle Publish/Subscribe.
 
-Technologie : RabbitMQ (AMQP)
+Technologie : RabbitMQ (AMQP) <br>
 Responsabilités :
 - Transport des événements internes
 - Gestion des files, des retries et de la résilience
 - Découplage entre Time Entry Service et Reporting Service
 
+#### Détails :
+container rabbitmq sur port 5672 ou 15672
 ---
 
 ### 6. Reporting / Analytics Service
 Service chargé de consommer les événements et de produire un modèle de lecture optimisé.
 
-Technologies possibles : Node.js, Python, Redis ou PostgreSQL
+Technologies possibles : Node.js, Python, Redis ou PostgreSQL <br>
 Responsabilités :
 - Consommer les messages provenant de RabbitMQ
 - Calculer les statistiques de temps
 - Maintenir un read-model optimisé
 - Exposer une API REST pour le reporting
+
+#### Détails :
+Tout dans le dossier reporting-service et container_name: reporting-service
