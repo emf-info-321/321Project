@@ -13,7 +13,7 @@ flowchart TD
 
     FE[Frontend web - vuejs]
     GW[API Gateway - Traefik]
-    KC[Auth Service - keycloak JWT]
+    KC[Auth Service - keycloak]
     TE[Time Entry Service - nodejs]
     MQ[(Event Broker - RabbitMQ)]
     RP[Reporting Service - nodejs]
